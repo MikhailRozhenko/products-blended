@@ -10,4 +10,5 @@ export function renderCategories(data) {
     )
     .join('');
   refs.categoriesList.innerHTML = markup;
-}
+} 
+
