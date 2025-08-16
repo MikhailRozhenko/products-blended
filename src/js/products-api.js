@@ -22,3 +22,8 @@ export async function fetchProducts(page) {
   );
   return data;
 }
+
+export async function fetchOneProduct(id) {
+  const { data } = await axios(`${ENDPOINTS.ONE_PRODUCT}${id}`);
+  return data;
+}
