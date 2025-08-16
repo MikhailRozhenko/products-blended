@@ -1,5 +1,5 @@
-import { getCategories } from './js/handlers';
+import { getCategories, getAllProducts } from './js/handlers';
 
 //Логіка сторінки Home
 getCategories();
-
+getAllProducts();
