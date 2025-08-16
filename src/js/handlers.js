@@ -1,11 +1,21 @@
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 
-import { fetchCategories, fetchProducts } from './products-api';
-import { renderCategories, renderProducts } from './render-function';
+import {
+  fetchCategories,
+  fetchProducts,
+  fetchOneProduct,
+} from './products-api';
+import {
+  renderCategories,
+  renderProducts,
+  renderCardProduct,
+} from './render-function';
 import { activeFirstBtn, iziToastErrorMessage } from './helpers';
 import { PER_PAGE } from './constants';
 import { refs } from './refs';
+
+import { openModal } from './modal';
 
 let currentPage = 1;
 let totalProducts = 0;
@@ -48,4 +58,19 @@ export async function loadMoreProducts() {
   // if (pageState.categoryName === 'All' || pageState.categoryName === '') {
   //   fetchProducts();
   // }
+}
+
+export async function getCardProduct(event) {
+  try {
+    if (!event.target.closest('.products__item')) {
+      return; // користувач клікнув між кнопками
+    }
+
+    const productID = event.target.closest('.products__item').dataset.id;
+    const data = await fetchOneProduct(`${productID}`);
+    renderCardProduct(data);
+    openModal();
+  } catch (error) {
+    iziToastErrorMessage(error);
+  }
 }
