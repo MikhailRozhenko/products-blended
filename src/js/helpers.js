@@ -1,5 +1,7 @@
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
+import { refs } from './refs';
+import { loadMoreProducts } from './handlers';
 
 export const iziToastOption = {
   timeout: 5000,
@@ -34,5 +36,26 @@ export function iziToastErrorMessage(error) {
 }
 
 export function clearGallery() {
-  refs.productsList.innerHTML = '';
+  refs.productList.innerHTML = '';
+}
+
+export function loadMoreVisibleStatus(current, total) {
+  if (current < total) {
+    showLoadMore();
+    // Удаление обработчика перед повторным добавлением (защита от возможного дублирования)
+    refs.loadMoreBtn.removeEventListener('click', loadMoreProducts);
+    refs.loadMoreBtn.addEventListener('click', loadMoreProducts);
+  } else {
+    hideLoadMore();
+    refs.loadMoreBtn.removeEventListener('click', loadMoreProducts);
+    throw new Error('No more products to load');
+  }
+}
+
+export function showLoadMore() {
+  refs.loadMoreBtn.classList.remove('is-hidden');
+}
+
+export function hideLoadMore() {
+  refs.loadMoreBtn.classList.add('is-hidden');
 }

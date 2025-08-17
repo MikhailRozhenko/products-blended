@@ -1,24 +1,27 @@
-import iziToast from 'izitoast';
-import 'izitoast/dist/css/iziToast.min.css';
-
 import {
   fetchCategories,
   fetchProducts,
   fetchOneProduct,
 } from './products-api';
+
 import {
   renderCategories,
   renderProducts,
   renderCardProduct,
 } from './render-function';
-import { activeFirstBtn, iziToastErrorMessage } from './helpers';
-import { PER_PAGE } from './constants';
-import { refs } from './refs';
 
+import {
+  activeFirstBtn,
+  iziToastErrorMessage,
+  loadMoreVisibleStatus,
+} from './helpers';
+
+import { PAGE_SIZE } from './constants';
+import { refs } from './refs';
 import { openModal } from './modal';
 
 let currentPage = 1;
-let totalProducts = 0;
+let totalPages = 0;
 
 export async function getCategories() {
   try {
@@ -27,26 +30,26 @@ export async function getCategories() {
     activeFirstBtn();
   } catch (error) {
     console.log(error);
-    iziToast.error({ message: 'Try again later!' });
+    iziToastErrorMessage({ message: 'Try again later!' });
   }
 }
 
 export async function getAllProducts() {
   try {
     const data = await fetchProducts(currentPage);
-    totalProducts = data.total;
-    console.log(data.total);
+    const totalProducts = data.total;
+    totalPages = Math.ceil(totalProducts / PAGE_SIZE);
+
     renderProducts(data.products);
 
-    if (totalProducts > PER_PAGE) {
-      refs.loadMoreBtn.classList.remove('is-hidden');
-      refs.loadMoreBtn.addEventListener('click', loadMoreProducts);
-    } else {
-      refs.loadMoreBtn.classList.add('is-hidden');
-      refs.loadMoreBtn.removeEventListener('click', loadMoreProducts);
-    }
-    totalProducts -= 12;
+    refs.productList.addEventListener('click', event => {
+      event.preventDefault();
+      getCardProduct(event);
+    });
+
+    loadMoreVisibleStatus(currentPage, totalPages);
   } catch (error) {
+    totalPages = 0;
     console.log(error);
     iziToastErrorMessage(error);
   }
@@ -55,19 +58,25 @@ export async function getAllProducts() {
 export async function loadMoreProducts() {
   currentPage += 1;
 
-  // if (pageState.categoryName === 'All' || pageState.categoryName === '') {
-  //   fetchProducts();
-  // }
+  try {
+    loadMoreVisibleStatus(currentPage, totalPages);
+    const data = await fetchProducts(currentPage);
+    renderProducts(data.products);
+  } catch (error) {
+    console.log(error);
+    iziToastErrorMessage(error);
+  }
 }
 
 export async function getCardProduct(event) {
   try {
     if (!event.target.closest('.products__item')) {
-      return; // користувач клікнув між кнопками
+      return;
     }
 
     const productID = event.target.closest('.products__item').dataset.id;
     const data = await fetchOneProduct(`${productID}`);
+
     renderCardProduct(data);
     openModal();
   } catch (error) {

@@ -6,4 +6,4 @@ export const ENDPOINTS = {
   ONE_PRODUCT: '/products/',
 };
 
-export const PER_PAGE = 12;
+export const PAGE_SIZE = 12;
