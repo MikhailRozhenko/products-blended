@@ -7,7 +7,7 @@
 // https://dummyjson.com/products/category/smartphones - отримати продукти по категорії
 
 import axios from 'axios';
-import { BASE_URL, ENDPOINTS, PER_PAGE } from './constants';
+import { BASE_URL, ENDPOINTS, PAGE_SIZE } from './constants';
 
 axios.defaults.baseURL = BASE_URL;
 
@@ -18,7 +18,7 @@ export async function fetchCategories() {
 
 export async function fetchProducts(page) {
   const { data } = await axios(
-    `${ENDPOINTS.ALL_PRODUCTS}${(page - 1) * PER_PAGE}`
+    `${ENDPOINTS.ALL_PRODUCTS}${(page - 1) * PAGE_SIZE}`
   );
   return data;
 }
