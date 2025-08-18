@@ -31,6 +31,7 @@ export function changeActiveButton(event) {
 }
 
 export function iziToastErrorMessage(error) {
+  console.log(error);
   iziToastOption.message = error.message;
   iziToast.show(iziToastOption);
 }
@@ -58,4 +59,12 @@ export function showLoadMore() {
 
 export function hideLoadMore() {
   refs.loadMoreBtn.classList.add('is-hidden');
+}
+
+export function showNotFoundProducts() {
+  refs.notFoundDiv.classList.add('not-found--visible');
+}
+
+export function hideNotFoundProducts() {
+  refs.notFoundDiv.classList.remove('not-found--visible');
 }
