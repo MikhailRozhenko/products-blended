@@ -27,3 +27,12 @@ export async function fetchOneProduct(id) {
   const { data } = await axios(`${ENDPOINTS.ONE_PRODUCT}${id}`);
   return data;
 }
+
+export async function fetchQueryProduct(query, page) {
+  const { data } = await axios(
+    `${ENDPOINTS.QUERY_PRODUCT}${query}${ENDPOINTS.PER_PAGE}${
+      (page - 1) * PAGE_SIZE
+    }`
+  );
+  return data;
+}
