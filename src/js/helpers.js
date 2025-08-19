@@ -33,6 +33,3 @@ export function iziToastErrorMessage(error) {
   iziToast.show(iziToastOption);
 }
 
-export function clearGallery() {
-  refs.productsList.innerHTML = '';
-}

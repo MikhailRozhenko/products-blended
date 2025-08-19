@@ -33,4 +33,8 @@ export function renderProducts(products) {
     )
     .join('');
   refs.productList.insertAdjacentHTML('beforeend', markup);
+} 
+
+export function clearGallery() {
+  refs.productList.innerHTML = '';
 }

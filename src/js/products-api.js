@@ -22,3 +22,8 @@ export async function fetchProducts(page) {
   );
   return data;
 }
+ 
+export async function fetchProductsByCategory(category) {
+  const { data } = await axios(`/products/category/${category}`);
+  return data;
+}
