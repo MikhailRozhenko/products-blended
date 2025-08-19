@@ -43,18 +43,22 @@ export function clearGallery() {
 export function loadMoreVisibleStatus(current, total) {
   if (current < total) {
     showLoadMore();
+
     // Удаление обработчика перед повторным добавлением (защита от возможного дублирования)
     refs.loadMoreBtn.removeEventListener('click', loadMoreProducts);
     refs.loadMoreBtn.addEventListener('click', loadMoreProducts);
   } else {
-    hideLoadMore();
     refs.loadMoreBtn.removeEventListener('click', loadMoreProducts);
+
+    hideLoadMore();
+    hideNotFoundProducts();
     throw new Error('No more products to load');
   }
 }
 
 export function showLoadMore() {
   refs.loadMoreBtn.classList.remove('is-hidden');
+  hideNotFoundProducts();
 }
 
 export function hideLoadMore() {
@@ -63,6 +67,7 @@ export function hideLoadMore() {
 
 export function showNotFoundProducts() {
   refs.notFoundDiv.classList.add('not-found--visible');
+  hideLoadMore();
 }
 
 export function hideNotFoundProducts() {

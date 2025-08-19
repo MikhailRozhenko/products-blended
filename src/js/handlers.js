@@ -18,6 +18,7 @@ import {
   clearGallery,
   hideNotFoundProducts,
   showNotFoundProducts,
+  hideLoadMore,
 } from './helpers';
 
 import { PAGE_SIZE } from './constants';
@@ -36,7 +37,6 @@ export async function getCategories() {
     renderCategories(['All', ...data]);
     activeFirstBtn();
   } catch (error) {
-    console.log(error);
     iziToastErrorMessage({ message: 'Try again later!' });
   }
 }
@@ -55,7 +55,6 @@ export async function getAllProducts() {
     totalPages = Math.ceil(totalProducts / PAGE_SIZE);
     loadMoreVisibleStatus(currentPage, totalPages);
   } catch (error) {
-    // totalPages = 0;
     iziToastErrorMessage(error);
   }
 }
@@ -63,7 +62,6 @@ export async function getAllProducts() {
 export async function loadMoreProducts() {
   currentPage += 1;
   let data;
-  console.log(query);
   try {
     if (query) {
       data = await fetchQueryProduct(query, currentPage);
@@ -74,8 +72,6 @@ export async function loadMoreProducts() {
     const totalProducts = data.total;
     totalPages = Math.ceil(totalProducts / PAGE_SIZE);
     loadMoreVisibleStatus(currentPage, totalPages);
-
-    // console.log('currentPage', currentPage, 'totalPages', totalPages);
   } catch (error) {
     iziToastErrorMessage(error);
   }
@@ -101,7 +97,6 @@ export function getQueryProduct() {
   refs.formSearch.addEventListener('submit', async event => {
     event.preventDefault();
 
-    // console.log(window.location.href);
     // window.location.href = './index.html';
     query = event.target.searchValue.value.trim();
     try {
@@ -114,20 +109,18 @@ export function getQueryProduct() {
         currentPage = 1;
         previousQuery = query;
       }
+
       clearGallery();
       const data = await fetchQueryProduct(query, currentPage);
       const totalProducts = data.total;
+      totalPages = Math.ceil(totalProducts / PAGE_SIZE);
+
       if (totalProducts === 0) {
         showNotFoundProducts();
       } else {
-        hideNotFoundProducts();
+        renderProducts(data.products);
+        loadMoreVisibleStatus(currentPage, totalPages);
       }
-
-      totalPages = Math.ceil(totalProducts / PAGE_SIZE);
-
-      renderProducts(data.products);
-
-      loadMoreVisibleStatus(currentPage, totalPages);
     } catch (error) {
       iziToastErrorMessage(error);
     }
